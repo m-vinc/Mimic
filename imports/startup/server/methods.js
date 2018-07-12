@@ -5,7 +5,7 @@ import { Random } from 'meteor/random'
 import Impersonates from 'meteor/b42:impersonate/imports/collections/Impersonates'
 
 Meteor.methods({
-  'Impersonate.masking' (securityMethod, targetId, token) {
+  'Impersonate.mask' (securityMethod, targetId, token) {
     check(token, Match.Maybe(String))
     check(targetId, String)
     check(securityMethod, String)

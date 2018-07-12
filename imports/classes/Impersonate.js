@@ -26,15 +26,15 @@ class Impersonate {
       })
     }
   }
-  masking (targetId) {
-    Meteor.call('Impersonate.masking', this.securityMethod, targetId, this.getToken(), (err, res) => {
+  mask (targetId) {
+    Meteor.call('Impersonate.mask', this.securityMethod, targetId, this.getToken(), (err, res) => {
       if (!err) {
         if (res && res.token) this.setToken(res.token)
         Meteor.connection.setUserId(res.targetId)
       } else this.setToken(undefined)
     })
   }
-  unmasking () {
+  unmask () {
     Meteor.call('Impersonate.unmask', this.securityMethod, this.getToken(), (err, res) => {
       if (!err && res) {
         Meteor.connection.setUserId(res.targetId)
