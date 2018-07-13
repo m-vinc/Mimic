@@ -55,6 +55,10 @@ The callback expose always the same arguments.
 
 Restore the current mimic state, useful in the Accounts.onLogin callback if you want to persist the mimic after a refresh.
 
+```javascript
+Mimic.setMask((err, res) => console.log(res))
+```
+
 ### Mimic.mask(userId, callback)
 
 Mimic the user with the _id `userId`
