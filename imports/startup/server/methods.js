@@ -4,6 +4,19 @@ import { Random } from 'meteor/random'
 
 import Mimics from 'meteor/b42:mimic/imports/collections/Mimics'
 
+const getOriginalId = function (token) {
+  const mimic = Mimics.findOne({token})
+  if (mimic) return mimic.user
+  return this.userId
+}
+
+const getAuthorization = function (securityMethod, token, targetId) {
+  if (!securityMethod) return true
+  const originalId = getOriginalId.bind(this)(token)
+  const authorization = Meteor.call(securityMethod, originalId, this.userId, targetId)
+  return authorization
+}
+
 Meteor.methods({
   'Mimic.mask' (securityMethod, targetId, token) {
     check(token, Match.Maybe(String))
@@ -11,7 +24,7 @@ Meteor.methods({
     check(securityMethod, Match.Maybe(String))
     const err = err => new Meteor.Error(`Mimic.masking`, err)
     if (targetId === this.userId) throw err('Cannot mimic yourself')
-    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
+    const authorisation = getAuthorization.bind(this)(securityMethod, token, targetId)
     if (!authorisation) throw err('Forbidden')
     if (token) {
       const mimic = Mimics.findOne({token})
@@ -33,9 +46,6 @@ Meteor.methods({
   'Mimic.getMasks' (securityMethod, token) {
     check(securityMethod, Match.Maybe(String))
     check(token, String)
-    const err = err => new Meteor.Error(`Mimic.masking`, err)
-    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
-    if (!authorisation) throw err('Forbidden')
     const mimic = Mimics.findOne({ token })
     if (mimic) {
       const targetId = mimic.masks[mimic.masks.length - 1]
@@ -49,9 +59,6 @@ Meteor.methods({
   'Mimic.unmask' (securityMethod, token) {
     check(token, Match.Maybe(String))
     check(securityMethod, Match.Maybe(String))
-    const err = err => new Meteor.Error(`Mimic.unmasking`, err)
-    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
-    if (!authorisation) throw err('Forbidden')
     const mimic = Mimics.findOne({ token })
     if (mimic) {
       const res = {}
@@ -71,9 +78,6 @@ Meteor.methods({
   'Mimic.resetMasks' (securityMethod, token) {
     check(token, Match.Maybe(String))
     check(securityMethod, Match.Maybe(String))
-    const err = err => new Meteor.Error(`Mimic.unmasking`, err)
-    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
-    if (!authorisation) throw err('Forbidden')
     const mimic = Mimics.findOne({ token })
     if (mimic) {
       Mimics.remove({ token })
