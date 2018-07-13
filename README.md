@@ -77,7 +77,7 @@ Mimic.mask((err, res) => console.log(res))
 
 ### Mimic.resetMasks(callback)
 
-Be yourself again !
+Be yourself !
 
 ```javascript
 Mimic.resetMasks((err, res) => console.log(res))
