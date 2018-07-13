@@ -12,10 +12,10 @@ class Mimic {
     if (!token) sessionStorage.removeItem('mimicToken')
     else sessionStorage.setItem('mimicToken', token)
   }
-  static getMasks () {
+  static setMasks () {
     const token = this.getToken()
     if (token) {
-      Meteor.call('Mimic.getMasks', this.securityMethod, this.getToken(), (err, res) => {
+      Meteor.call('Mimic.setMasks', this.getToken(), (err, res) => {
         if (!err && res && res.targetId) {
           Meteor.connection.setUserId(res.targetId)
         } else this.setToken(undefined)
@@ -39,7 +39,7 @@ class Mimic {
   }
   static unmask (callback) {
     check(callback, Match.Maybe(Function))
-    Meteor.call('Mimic.unmask', this.securityMethod, this.getToken(), (err, res) => {
+    Meteor.call('Mimic.unmask', this.getToken(), (err, res) => {
       if (!err) {
         if (res) {
           Meteor.connection.setUserId(res.targetId)
@@ -52,7 +52,7 @@ class Mimic {
     })
   }
   static resetMasks (callback) {
-    Meteor.call('Mimic.resetMasks', this.securityMethod, this.getToken(), (err, res) => {
+    Meteor.call('Mimic.resetMasks', this.getToken(), (err, res) => {
       if (!err) {
         if (res) {
           Meteor.connection.setUserId(res.targetId)

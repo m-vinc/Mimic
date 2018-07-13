@@ -43,8 +43,7 @@ Meteor.methods({
       return {targetId, token: nToken}
     }
   },
-  'Mimic.getMasks' (securityMethod, token) {
-    check(securityMethod, Match.Maybe(String))
+  'Mimic.setMasks' (token) {
     check(token, String)
     const mimic = Mimics.findOne({ token })
     if (mimic) {
@@ -56,9 +55,8 @@ Meteor.methods({
       return false
     }
   },
-  'Mimic.unmask' (securityMethod, token) {
+  'Mimic.unmask' (token) {
     check(token, Match.Maybe(String))
-    check(securityMethod, Match.Maybe(String))
     const mimic = Mimics.findOne({ token })
     if (mimic) {
       const res = {}
@@ -75,9 +73,8 @@ Meteor.methods({
       return res
     } else return false
   },
-  'Mimic.resetMasks' (securityMethod, token) {
+  'Mimic.resetMasks' (token) {
     check(token, Match.Maybe(String))
-    check(securityMethod, Match.Maybe(String))
     const mimic = Mimics.findOne({ token })
     if (mimic) {
       Mimics.remove({ token })
