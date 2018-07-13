@@ -51,7 +51,7 @@ The callback expose always the same arguments.
 
 **err** which is a standard `Meteor.Error` and **res** which is the id of the user setted.
 
-### Mimic.setMasks()
+### Mimic.setMasks(callback)
 
 Restore the current mimic state, useful in the Accounts.onLogin callback if you want to persist the mimic after a refresh.
 
