@@ -6,7 +6,7 @@ A meteor package to mimic other users
 
 Add package:
 ```
-meteor add b42:mimic
+meteor add mvinc:mimic
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ Here, I use [chap:authority](https://github.com/marcchapeau/meteor-authority) to
 You need to set the security method name.
 
 ```javascript
-import Mimic from 'b42:mimic'
+import Mimic from 'mvinc:mimic'
 
 Mimic.securityMethod = 'Mimic.security'
 

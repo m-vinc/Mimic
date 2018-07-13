@@ -2,7 +2,7 @@ import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 
-import Mimics from 'meteor/b42:mimic/imports/collections/Mimics'
+import Mimics from 'meteor/mvinc:mimic/imports/collections/Mimics'
 
 const getOriginalId = function (token) {
   const mimic = Mimics.findOne({token})

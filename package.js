@@ -1,7 +1,7 @@
 Package.describe({
-  name: 'b42:mimic',
+  name: 'mvinc:mimic',
   version: '0.0.1',
-  summary: '',
+  summary: 'A package to mimic other users',
   git: 'https://github.com/m-vinc/Mimic.git',
   documentation: 'README.md'
 })
