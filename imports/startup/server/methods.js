@@ -2,83 +2,83 @@ import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 import { Random } from 'meteor/random'
 
-import Impersonates from 'meteor/b42:impersonate/imports/collections/Impersonates'
+import Mimics from 'meteor/b42:mimic/imports/collections/Mimics'
 
 Meteor.methods({
-  'Impersonate.mask' (securityMethod, targetId, token) {
+  'Mimic.mask' (securityMethod, targetId, token) {
     check(token, Match.Maybe(String))
     check(targetId, String)
     check(securityMethod, String)
-    const err = err => new Meteor.Error(`Impersonate.masking`, err)
-    if (targetId === this.userId) throw err('Cannot impersonate yourself')
+    const err = err => new Meteor.Error(`Mimic.masking`, err)
+    if (targetId === this.userId) throw err('Cannot mimic yourself')
     const authorisation = Meteor.call(securityMethod, token)
     if (!authorisation) throw err('Forbidden')
     if (token) {
-      const impersonate = Impersonates.findOne({token})
-      if (impersonate) {
-        Impersonates.update(impersonate._id, {$set: {masks: impersonate.masks.concat(targetId)}})
+      const mimic = Mimics.findOne({token})
+      if (mimic) {
+        Mimics.update(mimic._id, {$set: {masks: mimic.masks.concat(targetId)}})
         this.setUserId(targetId)
         return { targetId }
       } else {
-        Impersonates.remove({user: this.userId})
+        Mimics.remove({user: this.userId})
         return false
       }
     } else {
       const nToken = Random.secret()
-      Impersonates.insert({user: this.userId, token: nToken, masks: [targetId]})
+      Mimics.insert({user: this.userId, token: nToken, masks: [targetId]})
       this.setUserId(targetId)
       return {targetId, token: nToken}
     }
   },
-  'Impersonate.getMasks' (securityMethod, token) {
+  'Mimic.getMasks' (securityMethod, token) {
     check(securityMethod, String)
     check(token, String)
-    const err = err => new Meteor.Error(`Impersonate.masking`, err)
+    const err = err => new Meteor.Error(`Mimic.masking`, err)
     const authorisation = Meteor.call(securityMethod, token)
     if (!authorisation) throw err('Forbidden')
-    const impersonate = Impersonates.findOne({ token })
-    if (impersonate) {
-      const targetId = impersonate.masks[impersonate.masks.length - 1]
+    const mimic = Mimics.findOne({ token })
+    if (mimic) {
+      const targetId = mimic.masks[mimic.masks.length - 1]
       this.setUserId(targetId)
       return { targetId }
     } else {
-      Impersonates.remove({user: this.userId})
+      Mimics.remove({user: this.userId})
       return false
     }
   },
-  'Impersonate.unmask' (securityMethod, token) {
+  'Mimic.unmask' (securityMethod, token) {
     check(token, Match.Maybe(String))
     check(securityMethod, String)
-    const err = err => new Meteor.Error(`Impersonate.unmasking`, err)
+    const err = err => new Meteor.Error(`Mimic.unmasking`, err)
     const authorisation = Meteor.call(securityMethod, token)
     if (!authorisation) throw err('Forbidden')
-    const impersonate = Impersonates.findOne({ token })
-    if (impersonate) {
+    const mimic = Mimics.findOne({ token })
+    if (mimic) {
       const res = {}
-      impersonate.masks.pop()
-      if (impersonate.masks.length <= 0) {
+      mimic.masks.pop()
+      if (mimic.masks.length <= 0) {
         res.reset = true
-        res.targetId = impersonate.user
-        Impersonates.remove({ token })
+        res.targetId = mimic.user
+        Mimics.remove({ token })
       } else {
-        res.targetId = impersonate.masks[impersonate.masks.length - 1]
-        Impersonates.update({ token }, {$set: {masks: impersonate.masks}})
+        res.targetId = mimic.masks[mimic.masks.length - 1]
+        Mimics.update({ token }, {$set: {masks: mimic.masks}})
       }
       this.setUserId(res.targetId)
       return res
     } else return false
   },
-  'Impersonate.resetMasks' (securityMethod, token) {
+  'Mimic.resetMasks' (securityMethod, token) {
     check(token, Match.Maybe(String))
     check(securityMethod, String)
-    const err = err => new Meteor.Error(`Impersonate.unmasking`, err)
+    const err = err => new Meteor.Error(`Mimic.unmasking`, err)
     const authorisation = Meteor.call(securityMethod, token)
     if (!authorisation) throw err('Forbidden')
-    const impersonate = Impersonates.findOne({ token })
-    if (impersonate) {
-      Impersonates.remove({ token })
-      this.setUserId(impersonate.user)
-      return {targetId: impersonate.user}
+    const mimic = Mimics.findOne({ token })
+    if (mimic) {
+      Mimics.remove({ token })
+      this.setUserId(mimic.user)
+      return {targetId: mimic.user}
     }
     return false
   }

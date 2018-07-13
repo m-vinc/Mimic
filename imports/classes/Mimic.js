@@ -1,25 +1,25 @@
 import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 
-class Impersonate {
+class Mimic {
   constructor (securityMethod) {
     check(securityMethod, String)
     this.securityMethod = securityMethod
   }
   getToken () {
     const sessionStorage = window.sessionStorage
-    const res = sessionStorage.getItem('impersonateToken') || undefined
+    const res = sessionStorage.getItem('mimicToken') || undefined
     return res
   }
   setToken (token) {
     const sessionStorage = window.sessionStorage
-    if (!token) sessionStorage.removeItem('impersonateToken')
-    else sessionStorage.setItem('impersonateToken', token)
+    if (!token) sessionStorage.removeItem('mimicToken')
+    else sessionStorage.setItem('mimicToken', token)
   }
   getMasks () {
     const token = this.getToken()
     if (token) {
-      Meteor.call('Impersonate.getMasks', this.securityMethod, this.getToken(), (err, res) => {
+      Meteor.call('Mimic.getMasks', this.securityMethod, this.getToken(), (err, res) => {
         if (!err && res && res.targetId) {
           Meteor.connection.setUserId(res.targetId)
         } else this.setToken(undefined)
@@ -28,7 +28,7 @@ class Impersonate {
   }
   mask (targetId, callback) {
     check(callback, Match.Maybe(Function))
-    Meteor.call('Impersonate.mask', this.securityMethod, targetId, this.getToken(), (err, res) => {
+    Meteor.call('Mimic.mask', this.securityMethod, targetId, this.getToken(), (err, res) => {
       if (!err) {
         if (res) {
           if (res.token) this.setToken(res.token)
@@ -43,7 +43,7 @@ class Impersonate {
   }
   unmask (callback) {
     check(callback, Match.Maybe(Function))
-    Meteor.call('Impersonate.unmask', this.securityMethod, this.getToken(), (err, res) => {
+    Meteor.call('Mimic.unmask', this.securityMethod, this.getToken(), (err, res) => {
       if (!err) {
         if (res) {
           Meteor.connection.setUserId(res.targetId)
@@ -56,7 +56,7 @@ class Impersonate {
     })
   }
   resetMasks (callback) {
-    Meteor.call('Impersonate.resetMasks', this.securityMethod, this.getToken(), (err, res) => {
+    Meteor.call('Mimic.resetMasks', this.securityMethod, this.getToken(), (err, res) => {
       if (!err) {
         if (res) {
           Meteor.connection.setUserId(res.targetId)
@@ -70,4 +70,4 @@ class Impersonate {
   }
 }
 
-export default Impersonate
+export default Mimic

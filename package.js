@@ -1,8 +1,8 @@
 Package.describe({
-  name: 'b42:impersonate',
+  name: 'b42:mimic',
   version: '0.0.1',
   summary: '',
-  git: 'https://gitlab-web.42.fr/secret/packages/users',
+  git: 'https://github.com/m-vinc/Mimic.git',
   documentation: 'README.md'
 })
 

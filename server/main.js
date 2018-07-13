@@ -1,1 +1,1 @@
-import 'meteor/b42:impersonate/imports/startup/server'
+import 'meteor/b42:mimic/imports/startup/server'
