@@ -30,7 +30,7 @@ Here is a security method example
 
 **targetId** is the id of the user you want to mimic
 
-Here, I use [chap:authority](https://github.com/marcchapeau/meteor-authority) to check if the user can perform the 'mimic' action.
+Here, I use [chap:authority](https://github.com/marcchapeau/meteor-authority) to check if the user have the permission to 'mimic'
 
 ### Client side
 
