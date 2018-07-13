@@ -1,4 +1,4 @@
-import { check } from 'meteor/check'
+import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 
 class Impersonate {
@@ -26,26 +26,46 @@ class Impersonate {
       })
     }
   }
-  mask (targetId) {
+  mask (targetId, callback) {
+    check(callback, Match.Maybe(Function))
     Meteor.call('Impersonate.mask', this.securityMethod, targetId, this.getToken(), (err, res) => {
       if (!err) {
-        if (res && res.token) this.setToken(res.token)
-        Meteor.connection.setUserId(res.targetId)
-      } else this.setToken(undefined)
+        if (res) {
+          if (res.token) this.setToken(res.token)
+          if (res.targetId) Meteor.connection.setUserId(res.targetId)
+          if (callback) callback(null, res.targetId)
+        } else {
+          this.setToken(undefined)
+          if (callback) callback(null, false)
+        }
+      } else if (callback) callback(err)
     })
   }
-  unmask () {
+  unmask (callback) {
+    check(callback, Match.Maybe(Function))
     Meteor.call('Impersonate.unmask', this.securityMethod, this.getToken(), (err, res) => {
-      if (!err && res) {
-        Meteor.connection.setUserId(res.targetId)
-        if (res.reset) this.setToken(undefined)
-      } else this.setToken(undefined)
+      if (!err) {
+        if (res) {
+          Meteor.connection.setUserId(res.targetId)
+          if (res.reset) this.setToken(undefined)
+        } else {
+          this.setToken(undefined)
+          if (callback) callback(null, false)
+        }
+      } else if (callback) callback(err)
     })
   }
-  resetMasks () {
+  resetMasks (callback) {
     Meteor.call('Impersonate.resetMasks', this.securityMethod, this.getToken(), (err, res) => {
-      if (!err && res) Meteor.connection.setUserId(res.targetId)
-      this.setToken(undefined)
+      if (!err) {
+        if (res) {
+          Meteor.connection.setUserId(res.targetId)
+          if (callback) callback(null, res.targetId)
+        } else {
+          this.setToken(undefined)
+          if (callback) callback(null, false)
+        }
+      } else if (callback) callback(err)
     })
   }
 }

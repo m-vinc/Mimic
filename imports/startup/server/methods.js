@@ -19,7 +19,10 @@ Meteor.methods({
         Impersonates.update(impersonate._id, {$set: {masks: impersonate.masks.concat(targetId)}})
         this.setUserId(targetId)
         return { targetId }
-      } else return false
+      } else {
+        Impersonates.remove({user: this.userId})
+        return false
+      }
     } else {
       const nToken = Random.secret()
       Impersonates.insert({user: this.userId, token: nToken, masks: [targetId]})
