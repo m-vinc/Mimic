@@ -2,21 +2,17 @@ import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 
 class Mimic {
-  constructor (securityMethod) {
-    check(securityMethod, String)
-    this.securityMethod = securityMethod
-  }
-  getToken () {
+  static getToken () {
     const sessionStorage = window.sessionStorage
     const res = sessionStorage.getItem('mimicToken') || undefined
     return res
   }
-  setToken (token) {
+  static setToken (token) {
     const sessionStorage = window.sessionStorage
     if (!token) sessionStorage.removeItem('mimicToken')
     else sessionStorage.setItem('mimicToken', token)
   }
-  getMasks () {
+  static getMasks () {
     const token = this.getToken()
     if (token) {
       Meteor.call('Mimic.getMasks', this.securityMethod, this.getToken(), (err, res) => {
@@ -26,7 +22,7 @@ class Mimic {
       })
     }
   }
-  mask (targetId, callback) {
+  static mask (targetId, callback) {
     check(callback, Match.Maybe(Function))
     Meteor.call('Mimic.mask', this.securityMethod, targetId, this.getToken(), (err, res) => {
       if (!err) {
@@ -41,7 +37,7 @@ class Mimic {
       } else if (callback) callback(err)
     })
   }
-  unmask (callback) {
+  static unmask (callback) {
     check(callback, Match.Maybe(Function))
     Meteor.call('Mimic.unmask', this.securityMethod, this.getToken(), (err, res) => {
       if (!err) {
@@ -55,7 +51,7 @@ class Mimic {
       } else if (callback) callback(err)
     })
   }
-  resetMasks (callback) {
+  static resetMasks (callback) {
     Meteor.call('Mimic.resetMasks', this.securityMethod, this.getToken(), (err, res) => {
       if (!err) {
         if (res) {

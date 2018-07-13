@@ -8,10 +8,10 @@ Meteor.methods({
   'Mimic.mask' (securityMethod, targetId, token) {
     check(token, Match.Maybe(String))
     check(targetId, String)
-    check(securityMethod, String)
+    check(securityMethod, Match.Maybe(String))
     const err = err => new Meteor.Error(`Mimic.masking`, err)
     if (targetId === this.userId) throw err('Cannot mimic yourself')
-    const authorisation = Meteor.call(securityMethod, token)
+    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
     if (!authorisation) throw err('Forbidden')
     if (token) {
       const mimic = Mimics.findOne({token})
@@ -31,10 +31,10 @@ Meteor.methods({
     }
   },
   'Mimic.getMasks' (securityMethod, token) {
-    check(securityMethod, String)
+    check(securityMethod, Match.Maybe(String))
     check(token, String)
     const err = err => new Meteor.Error(`Mimic.masking`, err)
-    const authorisation = Meteor.call(securityMethod, token)
+    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
     if (!authorisation) throw err('Forbidden')
     const mimic = Mimics.findOne({ token })
     if (mimic) {
@@ -48,9 +48,9 @@ Meteor.methods({
   },
   'Mimic.unmask' (securityMethod, token) {
     check(token, Match.Maybe(String))
-    check(securityMethod, String)
+    check(securityMethod, Match.Maybe(String))
     const err = err => new Meteor.Error(`Mimic.unmasking`, err)
-    const authorisation = Meteor.call(securityMethod, token)
+    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
     if (!authorisation) throw err('Forbidden')
     const mimic = Mimics.findOne({ token })
     if (mimic) {
@@ -70,9 +70,9 @@ Meteor.methods({
   },
   'Mimic.resetMasks' (securityMethod, token) {
     check(token, Match.Maybe(String))
-    check(securityMethod, String)
+    check(securityMethod, Match.Maybe(String))
     const err = err => new Meteor.Error(`Mimic.unmasking`, err)
-    const authorisation = Meteor.call(securityMethod, token)
+    const authorisation = securityMethod ? Meteor.call(securityMethod, token) : true
     if (!authorisation) throw err('Forbidden')
     const mimic = Mimics.findOne({ token })
     if (mimic) {
