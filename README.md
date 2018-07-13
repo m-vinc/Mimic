@@ -39,7 +39,7 @@ You need to set the security method name.
 ```javascript
 import Mimic from 'b42:mimic'
 
-Mimic.securityMethod = 'Mimic.security' // You can named your security function like you want
+Mimic.securityMethod = 'Mimic.security'
 
 ```
 
