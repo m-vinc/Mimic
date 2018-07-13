@@ -26,7 +26,7 @@ Here is a security method example
 
 **originalId** is the id of the user who initiates the first mimic.
 
-**currentId** is the current id of the user, if you mimic a user this arguments will be equal to the id of this user.
+**currentId** is the current id of the user, if you mimic a user this argument will be equal to the id of this user.
 
 **targetId** is the id of the user you want to mimic
 
