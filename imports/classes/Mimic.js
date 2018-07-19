@@ -43,6 +43,7 @@ class Mimic {
         if (res) {
           Meteor.connection.setUserId(res.targetId)
           if (res.reset) this.setToken(undefined)
+          if (callback) callback(null, res.targetId)
         } else {
           this.setToken(undefined)
           if (callback) callback(null, false)
