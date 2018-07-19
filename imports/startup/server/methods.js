@@ -32,10 +32,7 @@ Meteor.methods({
         Mimics.update(mimic._id, {$set: {masks: mimic.masks.concat(targetId)}})
         this.setUserId(targetId)
         return { targetId }
-      } else {
-        Mimics.remove({user: this.userId})
-        return false
-      }
+      } else return false
     } else {
       const nToken = Random.secret()
       Mimics.insert({user: this.userId, token: nToken, masks: [targetId]})
@@ -45,7 +42,7 @@ Meteor.methods({
   },
   'Mimic.setMasks' (token) {
     check(token, String)
-    const mimic = Mimics.findOne({ token })
+    const mimic = Mimics.findOne({ token, user: this.userId })
     if (mimic) {
       const targetId = mimic.masks[mimic.masks.length - 1]
       this.setUserId(targetId)
@@ -57,7 +54,7 @@ Meteor.methods({
   },
   'Mimic.unmask' (token) {
     check(token, Match.Maybe(String))
-    const mimic = Mimics.findOne({ token })
+    const mimic = Mimics.findOne({ token: token || '' })
     if (mimic) {
       const res = {}
       mimic.masks.pop()
@@ -75,7 +72,7 @@ Meteor.methods({
   },
   'Mimic.resetMasks' (token) {
     check(token, Match.Maybe(String))
-    const mimic = Mimics.findOne({ token })
+    const mimic = Mimics.findOne({ token: token || '' })
     if (mimic) {
       Mimics.remove({ token })
       this.setUserId(mimic.user)

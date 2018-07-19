@@ -1,21 +1,20 @@
 import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 
+const sessionStorage = window.sessionStorage
 class Mimic {
   static getToken () {
-    const sessionStorage = window.sessionStorage
-    const res = sessionStorage.getItem('mimicToken') || undefined
-    return res
+    return (sessionStorage && sessionStorage.getItem('mimicToken')) || undefined
   }
   static setToken (token) {
-    const sessionStorage = window.sessionStorage
+    if (!sessionStorage) return
     if (!token) sessionStorage.removeItem('mimicToken')
     else sessionStorage.setItem('mimicToken', token)
   }
   static setMasks () {
     const token = this.getToken()
     if (token) {
-      Meteor.call('Mimic.setMasks', this.getToken(), (err, res) => {
+      Meteor.call('Mimic.setMasks', token, (err, res) => {
         if (!err && res && res.targetId) {
           Meteor.connection.setUserId(res.targetId)
         } else this.setToken(undefined)
@@ -52,6 +51,7 @@ class Mimic {
     })
   }
   static resetMasks (callback) {
+    check(callback, Match.Maybe(Function))
     Meteor.call('Mimic.resetMasks', this.getToken(), (err, res) => {
       if (!err) {
         if (res) {

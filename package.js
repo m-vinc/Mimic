@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mvinc:mimic',
-  version: '0.0.1',
+  version: '1.0.0',
   summary: 'A package to mimic other users',
   git: 'https://github.com/m-vinc/Mimic.git',
   documentation: 'README.md'
