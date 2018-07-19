@@ -72,7 +72,7 @@ Mimic.mask('SXwdJERzhs5gfuegH', (err, res) => console.log(res))
 Restore the previous user mimiced
 
 ```javascript
-Mimic.mask((err, res) => console.log(res))
+Mimic.unmask((err, res) => console.log(res))
 ```
 
 ### Mimic.resetMasks(callback)
